@@ -1,0 +1,53 @@
+# Keepfall Phase 1 backend — Cloudflare Workers.
+# Scope: accounts + cloud save + StoreKit 2 receipt validation + retry-token authority ONLY.
+# No gameplay simulation. Single-player PvE. (source-of-truth §11)
+
+name = "keepfall-api"
+main = "src/index.ts"
+compatibility_date = "2024-12-30"
+compatibility_flags = ["nodejs_compat"]
+
+# D1 — the source of truth for accounts, cloud saves, receipts, entitlements,
+# match attempts, and the retry ledger. Binding name is DB (used as env.DB).
+[[d1_databases]]
+binding = "DB"
+database_name = "keepfall"
+database_id = "REPLACE_WITH_D1_DATABASE_ID"
+migrations_dir = "src/db/migrations"
+
+# Non-secret config. Tunable game economy values live in Firebase Remote Config
+# on the client (source-of-truth §11); these are the server-side constants the
+# Worker must agree on. Canonical values trace to source-of-truth §6.
+#
+# Storefronts: Phase 1 ships to CA / AU / NZ only.
+#
+# SECRETS — never committed. Set with `wrangler secret put <NAME>`:
+#   APPLE_SHARED_SECRET  — App Store Connect shared secret (legacy verifyReceipt fallback).
+#   APPLE_ROOT_CERT      — Apple Root CA - G3 cert (PEM) used to verify StoreKit 2 JWS chains.
+#   AUTH_HMAC_SECRET     — HMAC key used to sign/verify bearer session tokens (auth.ts).
+[vars]
+ENVIRONMENT = "development"
+# Bundle id of the iOS app; StoreKit 2 transactions are validated against this.
+APP_BUNDLE_ID = "com.vyradata.keepfall"
+# Keepfall Plus — the ONE and ONLY subscription tier. $5.99/month. (source-of-truth §6 Product 2)
+PLUS_PRODUCT_ID = "com.vyradata.keepfall.plus.monthly"
+# Retry token Shard pricing (source-of-truth §6 Product 3).
+RETRY_TOKEN_SHARD_COST = "20"
+RETRY_TOKEN_BUNDLE_5_SHARD_COST = "90"
+# Daily retry-token grant caps (source-of-truth §6 Product 3).
+RETRY_DAILY_CAP_F2P = "3"
+RETRY_DAILY_CAP_PLUS = "5"
+# Token session lifetime, seconds (7 days). Sized for a mobile client that opens daily.
+SESSION_TTL_SECONDS = "604800"
+
+# Production environment. Secrets are set per-environment with
+#   `wrangler secret put <NAME> --env production`.
+[env.production]
+name = "keepfall-api-production"
+vars = { ENVIRONMENT = "production", APP_BUNDLE_ID = "com.vyradata.keepfall", PLUS_PRODUCT_ID = "com.vyradata.keepfall.plus.monthly", RETRY_TOKEN_SHARD_COST = "20", RETRY_TOKEN_BUNDLE_5_SHARD_COST = "90", RETRY_DAILY_CAP_F2P = "3", RETRY_DAILY_CAP_PLUS = "5", SESSION_TTL_SECONDS = "604800" }
+
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "keepfall"
+database_id = "REPLACE_WITH_PROD_D1_DATABASE_ID"
+migrations_dir = "src/db/migrations"

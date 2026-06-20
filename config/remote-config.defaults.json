@@ -1,0 +1,69 @@
+{
+  "_meta": {
+    "schemaVersion": 1,
+    "lastUpdated": "<SET_AT_SEED_TIME — do not hand-edit; build/seed tooling stamps the real value>",
+    "tuningPolicy": "tuning policy: values only, never power/units"
+  },
+
+  "tile.yield.t1": 10,
+  "tile.yield.t2": 25,
+  "tile.yield.t3": 60,
+
+  "tile.cap.t1": 120,
+  "tile.cap.t2": 300,
+  "tile.cap.t3": 720,
+
+  "tile.fillHours": 12,
+
+  "accelerator.price.t1": 15,
+  "accelerator.price.t2": 30,
+  "accelerator.price.t3": 60,
+  "accelerator.maxDaysPerPurchase": 1,
+  "accelerator.maxQueuedDays": 3,
+  "accelerator.minFillPctToOffer": 0.30,
+  "accelerator.lockedFirstMinutesD1": 15,
+
+  "plus.priceUsd": 5.99,
+  "plus.yieldBonusPct": 0.50,
+  "plus.extraDeckSlots": 1,
+  "plus.dailyQuestShardMultiplier": 2,
+  "plus.dailyLoginShardBonus": 5,
+  "plus.freeTierSkipsPerWeek": 1,
+  "plus.trial.enabled": true,
+  "plus.trial.days": 7,
+
+  "deck.size": 8,
+  "deck.avgElixirMin": 2.6,
+  "deck.avgElixirMax": 3.0,
+  "deck.slots.f2p": 3,
+  "deck.slots.plus": 4,
+  "deck.slots.maxPurchased": 6,
+
+  "elixir.regenPerSec": 1,
+  "elixir.cap": 10,
+
+  "ai.threshold.apprentice": 0,
+  "ai.threshold.adept": 8,
+  "ai.threshold.tactician": 12,
+  "ai.threshold.commander": 18,
+  "ai.threshold.marshal": 22,
+
+  "retry.cost.single": 20,
+  "retry.cost.fivePack": 90,
+  "retry.dailyCap.f2p": 3,
+  "retry.dailyCap.plus": 5,
+
+  "funnel.plus.maxReveals": 3,
+  "funnel.plus.windowDays": 30,
+  "funnel.plus.postD30PerMonth": 1,
+  "funnel.accelHint.maxPerTilePerWeek": 1,
+  "funnel.accelHint.cooldownDays": 7,
+  "funnel.retry.minConsecutiveLosses": 3,
+  "funnel.postD30.suppressNewTriggers": true,
+  "funnel.d3.starterPackUsd": 0.99,
+
+  "battlepass.seasonDays": 30,
+  "shop.rotationDays": 14,
+  "shop.skusPerRotation.min": 3,
+  "shop.skusPerRotation.max": 5
+}

@@ -1,0 +1,36 @@
+# ── Unity ───────────────────────────────────────────────
+unity/[Ll]ibrary/
+unity/[Tt]emp/
+unity/[Oo]bj/
+unity/[Bb]uild/
+unity/[Bb]uilds/
+unity/[Ll]ogs/
+unity/[Uu]ser[Ss]ettings/
+unity/[Mm]emoryCaptures/
+unity/.vs/
+unity/*.csproj
+unity/*.sln
+unity/*.unityproj
+*.apk
+*.ipa
+*.app
+
+# ── Node / Cloudflare Workers ───────────────────────────
+node_modules/
+backend/.wrangler/
+backend/dist/
+backend/.dev.vars
+*.log
+.DS_Store
+
+# ── Secrets ─────────────────────────────────────────────
+.env
+.env.local
+*.secret
+GoogleService-Info.plist
+firebase-adminsdk*.json
+
+# ── Editor ──────────────────────────────────────────────
+.idea/
+.vscode/*
+!.vscode/extensions.json

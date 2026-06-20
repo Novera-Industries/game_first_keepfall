@@ -1,0 +1,449 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://keepfall.vyradata.com/config/remote-config.schema.json",
+  "title": "Keepfall Firebase Remote Config Contract (Phase 1)",
+  "description": "JSON Schema for every live-tunable Keepfall key. Every key tunes a VALUE (a rate, a cap, a price, a cadence, a threshold) — never unlocks paywalled power, never grants a unit, never grants a tile, never adds a currency. All defaults trace to docs/00-source-of-truth.md. Firebase Remote Config keys are flat dot.case strings; the Unity RemoteConfig accessor mirrors these names verbatim. Min/max bounds exist to make every key safe to push live: an operator cannot, within these bounds, turn a value-tuner into a power-seller.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "_meta",
+    "tile.yield.t1",
+    "tile.yield.t2",
+    "tile.yield.t3",
+    "tile.cap.t1",
+    "tile.cap.t2",
+    "tile.cap.t3",
+    "tile.fillHours",
+    "accelerator.price.t1",
+    "accelerator.price.t2",
+    "accelerator.price.t3",
+    "accelerator.maxDaysPerPurchase",
+    "accelerator.maxQueuedDays",
+    "accelerator.minFillPctToOffer",
+    "accelerator.lockedFirstMinutesD1",
+    "plus.priceUsd",
+    "plus.yieldBonusPct",
+    "plus.extraDeckSlots",
+    "plus.dailyQuestShardMultiplier",
+    "plus.dailyLoginShardBonus",
+    "plus.freeTierSkipsPerWeek",
+    "plus.trial.enabled",
+    "plus.trial.days",
+    "deck.size",
+    "deck.avgElixirMin",
+    "deck.avgElixirMax",
+    "deck.slots.f2p",
+    "deck.slots.plus",
+    "deck.slots.maxPurchased",
+    "elixir.regenPerSec",
+    "elixir.cap",
+    "ai.threshold.apprentice",
+    "ai.threshold.adept",
+    "ai.threshold.tactician",
+    "ai.threshold.commander",
+    "ai.threshold.marshal",
+    "retry.cost.single",
+    "retry.cost.fivePack",
+    "retry.dailyCap.f2p",
+    "retry.dailyCap.plus",
+    "funnel.plus.maxReveals",
+    "funnel.plus.windowDays",
+    "funnel.plus.postD30PerMonth",
+    "funnel.accelHint.maxPerTilePerWeek",
+    "funnel.accelHint.cooldownDays",
+    "funnel.retry.minConsecutiveLosses",
+    "funnel.postD30.suppressNewTriggers",
+    "funnel.d3.starterPackUsd",
+    "battlepass.seasonDays",
+    "shop.rotationDays",
+    "shop.skusPerRotation.min",
+    "shop.skusPerRotation.max"
+  ],
+  "properties": {
+    "_meta": {
+      "type": "object",
+      "description": "Contract metadata. Not a tunable; carried so a fetched config can be identified and audited.",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "lastUpdated", "tuningPolicy"],
+      "properties": {
+        "schemaVersion": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Version of THIS schema/contract shape. Bump when keys are added, removed, or re-bounded so clients can detect a contract they do not understand."
+        },
+        "lastUpdated": {
+          "type": "string",
+          "description": "Human note for when these defaults were last edited. Placeholder string only — never fabricate a timestamp; the build/seed tooling stamps the real value."
+        },
+        "tuningPolicy": {
+          "type": "string",
+          "description": "The one rule this whole file obeys.",
+          "const": "tuning policy: values only, never power/units"
+        }
+      }
+    },
+
+    "tile.yield.t1": {
+      "type": "integer",
+      "default": 10,
+      "minimum": 1,
+      "maximum": 200,
+      "description": "Stone earned per hour by a T1 (early) tile. SoT s2. Safe to tune: changes earn PACE only — Stone is the earned currency and buys no paywalled power. Tiles still come only from winning combat."
+    },
+    "tile.yield.t2": {
+      "type": "integer",
+      "default": 25,
+      "minimum": 1,
+      "maximum": 400,
+      "description": "Stone per hour for a T2 (mid) tile. SoT s2. Tunes the mid-game Stone curve (SoT s2 F2P daily curve) without altering what Stone can buy."
+    },
+    "tile.yield.t3": {
+      "type": "integer",
+      "default": 60,
+      "minimum": 1,
+      "maximum": 800,
+      "description": "Stone per hour for a T3 (late Phase 1) tile. SoT s2. Tunes late-game pace toward the 35–45 day F2P roster-completion target."
+    },
+    "tile.cap.t1": {
+      "type": "integer",
+      "default": 120,
+      "minimum": 10,
+      "maximum": 2400,
+      "description": "Max Stone a T1 tile holds before a claim is required. SoT s2 (= yield x fillHours = 10 x 12). Tuning the cap changes how often a player must return to claim — a retention/convenience dial, not a power dial."
+    },
+    "tile.cap.t2": {
+      "type": "integer",
+      "default": 300,
+      "minimum": 10,
+      "maximum": 6000,
+      "description": "Max Stone a T2 tile holds before claim. SoT s2 (= 25 x 12). Same idle-storage dial as t1."
+    },
+    "tile.cap.t3": {
+      "type": "integer",
+      "default": 720,
+      "minimum": 10,
+      "maximum": 12000,
+      "description": "Max Stone a T3 tile holds before claim. SoT s2 (= 60 x 12). Same idle-storage dial as t1."
+    },
+    "tile.fillHours": {
+      "type": "number",
+      "default": 12,
+      "minimum": 1,
+      "maximum": 48,
+      "description": "Hours for an empty tile to accrue to its cap. SoT s2 (all ranks fill in 12h). Accrual is real-time and survives app close, clamped to this window. Tunes return cadence only."
+    },
+
+    "accelerator.price.t1": {
+      "type": "integer",
+      "default": 15,
+      "minimum": 1,
+      "maximum": 500,
+      "description": "Shard price to instantly fill a T1 tile to its CURRENT cap. SoT s6 Product 1. Sells time the player already earned (one cap fill), never extra Stone beyond the cap. Price is a value dial; the per-purchase yield ceiling is enforced by accelerator.maxDaysPerPurchase, not by price."
+    },
+    "accelerator.price.t2": {
+      "type": "integer",
+      "default": 30,
+      "minimum": 1,
+      "maximum": 1000,
+      "description": "Shard price to fill a T2 tile to current cap. SoT s6 (cheaper per Stone at higher tiers). Value dial only."
+    },
+    "accelerator.price.t3": {
+      "type": "integer",
+      "default": 60,
+      "minimum": 1,
+      "maximum": 2000,
+      "description": "Shard price to fill a T3 tile to current cap. SoT s6. Value dial only."
+    },
+    "accelerator.maxDaysPerPurchase": {
+      "type": "number",
+      "default": 1,
+      "minimum": 0.25,
+      "maximum": 1,
+      "description": "Hard cap: most days of yield a single accelerator purchase may grant. SoT s6 (<= 1 day of yield per purchase; never more than one full cap fill). Max is pinned at 1 so live tuning can only TIGHTEN this guardrail, never loosen it into selling outcomes."
+    },
+    "accelerator.maxQueuedDays": {
+      "type": "number",
+      "default": 3,
+      "minimum": 1,
+      "maximum": 3,
+      "description": "Hard cap: most days of yield that may be queued on a single tile via acceleration. SoT s6 (no stacking past 3 days). Max pinned at 3 so tuning can only tighten the anti-stacking guardrail."
+    },
+    "accelerator.minFillPctToOffer": {
+      "type": "number",
+      "default": 0.30,
+      "minimum": 0.30,
+      "maximum": 1,
+      "description": "A tile must be at least this fraction full before the accelerate option appears. SoT s6 (tile >= 30% filled). Minimum pinned at 0.30 so tuning can only make the offer RARER (raise the threshold), never push it earlier than the contract allows."
+    },
+    "accelerator.lockedFirstMinutesD1": {
+      "type": "integer",
+      "default": 15,
+      "minimum": 15,
+      "maximum": 240,
+      "description": "Minutes of D1 play during which the accelerator is fully locked. SoT s6 (locked during first 15 minutes of D1) and SoT s8 (D1 = pure play, no monetization). Minimum pinned at 15 so tuning can only EXTEND the no-sell window, never shorten it."
+    },
+
+    "plus.priceUsd": {
+      "type": "number",
+      "default": 5.99,
+      "minimum": 0.99,
+      "maximum": 9.99,
+      "description": "Monthly price of Keepfall Plus (ONE tier only). SoT s6 Product 2. Price dial only — there is exactly one subscription tier; multi-tier subscriptions are a banned anti-pattern (SoT s10.8). Actual StoreKit price tier is set in App Store Connect; this value drives display copy and must match."
+    },
+    "plus.yieldBonusPct": {
+      "type": "number",
+      "default": 0.50,
+      "minimum": 0,
+      "maximum": 0.50,
+      "description": "Tile-yield bonus for active Plus subscribers, as a fraction. SoT s6 (+50% on all owned tiles). This compresses TIME (roster completion ~22 vs ~40 days), it does not grant power, units, or tiles. Max pinned at 0.50 so tuning cannot inflate a convenience perk into a pay-to-win gap."
+    },
+    "plus.extraDeckSlots": {
+      "type": "integer",
+      "default": 1,
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Extra saved-deck loadout slots granted by Plus. SoT s5/s6 (+1 deck slot, 4 total). A loadout-convenience perk, not a combat advantage. Max pinned at 1 to match the contract; deck.slots.plus carries the resulting absolute total."
+    },
+    "plus.dailyQuestShardMultiplier": {
+      "type": "integer",
+      "default": 2,
+      "minimum": 1,
+      "maximum": 2,
+      "description": "Multiplier on daily-quest Shard rewards for Plus. SoT s6 (2x daily quest Shard, +100 Shards/week). Adjusts Shard earn pace for subscribers; Shards buy time/cosmetics/retries, never paywalled power. Max pinned at 2."
+    },
+    "plus.dailyLoginShardBonus": {
+      "type": "integer",
+      "default": 5,
+      "minimum": 0,
+      "maximum": 5,
+      "description": "Extra Shards from the daily login bonus for Plus. SoT s6 (+5 Shards/day, +150/month). Earn-pace dial only. Max pinned at 5 to match the contract."
+    },
+    "plus.freeTierSkipsPerWeek": {
+      "type": "integer",
+      "default": 1,
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Free Battle Pass tier-skips granted to Plus per week. SoT s6 (1 free tier skip/week). A completionist convenience; the Battle Pass is cosmetic-only on both tracks (SoT s7) so a skip never grants power. Max pinned at 1."
+    },
+    "plus.trial.enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether the Plus free trial is offered. SoT s6 (7-day free trial, gated behind a remote-config flag). A live kill-switch for the trial; toggling it sells no power either way."
+    },
+    "plus.trial.days": {
+      "type": "integer",
+      "default": 7,
+      "minimum": 1,
+      "maximum": 14,
+      "description": "Length of the Plus free trial in days. SoT s6 (7-day free trial). Trial-length dial only; must align with the StoreKit introductory offer configured in App Store Connect."
+    },
+
+    "deck.size": {
+      "type": "integer",
+      "default": 8,
+      "minimum": 8,
+      "maximum": 8,
+      "description": "Cards in a deck (a 5-card hand draws from this). SoT s4/s5 (exactly 8 cards). A core rule, not a tunable balance lever — pinned at 8 so live config cannot break the validator. Exposed for parity/override safety only."
+    },
+    "deck.avgElixirMin": {
+      "type": "number",
+      "default": 2.6,
+      "minimum": 1.0,
+      "maximum": 10.0,
+      "description": "Lower bound of the target average-elixir window the deck validator enforces. SoT s5 (target avg 2.6–3.0). A deck-construction guideline; tuning the window shapes meta variety, not unit power. Must stay <= deck.avgElixirMax."
+    },
+    "deck.avgElixirMax": {
+      "type": "number",
+      "default": 3.0,
+      "minimum": 1.0,
+      "maximum": 10.0,
+      "description": "Upper bound of the target average-elixir window. SoT s5 (target avg 2.6–3.0). Must stay >= deck.avgElixirMin and <= elixir.cap."
+    },
+    "deck.slots.f2p": {
+      "type": "integer",
+      "default": 3,
+      "minimum": 1,
+      "maximum": 6,
+      "description": "Saved-deck loadout slots for a free player. SoT s5 (3 F2P). Loadout convenience; more slots never add combat power. Should stay <= deck.slots.plus <= deck.slots.maxPurchased."
+    },
+    "deck.slots.plus": {
+      "type": "integer",
+      "default": 4,
+      "minimum": 1,
+      "maximum": 6,
+      "description": "Loadout slots for a Plus subscriber (absolute total). SoT s5/s6 (4 Plus = 3 F2P + plus.extraDeckSlots). Convenience only."
+    },
+    "deck.slots.maxPurchased": {
+      "type": "integer",
+      "default": 6,
+      "minimum": 1,
+      "maximum": 6,
+      "description": "Ceiling on loadout slots reachable via Stone-purchased expansion. SoT s5 (up to 6 purchased). Expansion is bought with EARNED Stone and grants storage convenience, never power. Max pinned at 6."
+    },
+
+    "elixir.regenPerSec": {
+      "type": "number",
+      "default": 1,
+      "minimum": 0.5,
+      "maximum": 2,
+      "description": "Elixir regenerated per second in a match. SoT s4 (1 per second). Tunes match pace symmetrically for player and AI; not a per-player advantage. A core feel lever exposed for global balancing only."
+    },
+    "elixir.cap": {
+      "type": "integer",
+      "default": 10,
+      "minimum": 5,
+      "maximum": 10,
+      "description": "Maximum stored elixir in a match. SoT s4 (cap 10). Symmetric match rule; max pinned at 10 to match the contract. Not a per-player power dial."
+    },
+
+    "ai.threshold.apprentice": {
+      "type": "integer",
+      "default": 0,
+      "minimum": 0,
+      "maximum": 24,
+      "description": "Minimum number of UNLOCKED UNITS (roster size, 0–24) at which the AI plays at Tier 1 Apprentice. SoT s4: difficulty advances on ROSTER EXPANSION, never raw days played; the D1–D3 etc. ranges are expected correlation, not the trigger. Starting tier, so 0. Tuning these thresholds re-shapes the difficulty curve against the SoT loss-rate targets (<=25% Apprentice, ~40% Tactician, ~55% Marshal) without a rebuild. Thresholds must be strictly ascending: apprentice < adept < tactician < commander < marshal."
+    },
+    "ai.threshold.adept": {
+      "type": "integer",
+      "default": 8,
+      "minimum": 0,
+      "maximum": 24,
+      "description": "Unlocked-unit count at which the AI advances to Tier 2 Adept. SoT s4 (roster-expansion trigger). Default 8 ~ end of the starter+early-core band. Must be > apprentice and < tactician."
+    },
+    "ai.threshold.tactician": {
+      "type": "integer",
+      "default": 12,
+      "minimum": 0,
+      "maximum": 24,
+      "description": "Unlocked-unit count at which the AI advances to Tier 3 Tactician. SoT s4. Default 12 ~ core roster filling in (SoT s2 Day 15–30 has 9–12 tiles owned / specialist tier in reach). Must be > adept and < commander."
+    },
+    "ai.threshold.commander": {
+      "type": "integer",
+      "default": 18,
+      "minimum": 0,
+      "maximum": 24,
+      "description": "Unlocked-unit count at which the AI advances to Tier 4 Commander (reads player decks). SoT s4. Default 18 ~ specialists landing, master tier in sight. Must be > tactician and < marshal."
+    },
+    "ai.threshold.marshal": {
+      "type": "integer",
+      "default": 22,
+      "minimum": 0,
+      "maximum": 24,
+      "description": "Unlocked-unit count at which the AI reaches Tier 5 Marshal (near-optimal). SoT s4. Default 22 ~ near roster completion (24 total = 6+10+6+2). Must be > commander."
+    },
+
+    "retry.cost.single": {
+      "type": "integer",
+      "default": 20,
+      "minimum": 1,
+      "maximum": 500,
+      "description": "Shard cost of a single PvE retry token. SoT s6 Product 3 (20 Shards each). A retry restores one attempt with IDENTICAL AI, map seed, and starting hand — the player must still win. The server (Cloudflare Worker) is the authority: cannot retry a win, cannot retry a retry, rewards capped at the first attempt. This key only prices the token; it never relaxes those server rules."
+    },
+    "retry.cost.fivePack": {
+      "type": "integer",
+      "default": 90,
+      "minimum": 1,
+      "maximum": 2500,
+      "description": "Shard cost of a 5-pack of retry tokens. SoT s6 (90 Shards for 5). Price dial only; same server-authoritative retry rules apply."
+    },
+    "retry.dailyCap.f2p": {
+      "type": "integer",
+      "default": 3,
+      "minimum": 0,
+      "maximum": 20,
+      "description": "Daily cap on free-login retry tokens for an F2P player. SoT s6 (daily login 1/day, cap 3). Caps a free drip; does not change retry rules. The Worker enforces the cap."
+    },
+    "retry.dailyCap.plus": {
+      "type": "integer",
+      "default": 5,
+      "minimum": 0,
+      "maximum": 20,
+      "description": "Daily cap on login retry tokens for a Plus subscriber. SoT s6 (Plus +1/day, cap 5). Convenience pacing for subscribers; same server-authoritative retry rules. Should stay >= retry.dailyCap.f2p."
+    },
+
+    "funnel.plus.maxReveals": {
+      "type": "integer",
+      "default": 3,
+      "minimum": 0,
+      "maximum": 3,
+      "description": "Max times the Keepfall Plus reveal may be shown within a 30-day window. SoT s8 frequency caps (Plus shown max 3 times / 30 days). Max pinned at 3 so live tuning can only REDUCE pressure, never exceed the contract. The trigger engine reads player state, never wall-clock alone."
+    },
+    "funnel.plus.windowDays": {
+      "type": "integer",
+      "default": 30,
+      "minimum": 7,
+      "maximum": 60,
+      "description": "Rolling window (in days) over which funnel.plus.maxReveals applies — the 'max 3 Plus reveals' cap window. SoT s8 (Plus shown max 3 times / 30 days). Cadence dial only; pairs with funnel.plus.maxReveals and never sells power."
+    },
+    "funnel.plus.postD30PerMonth": {
+      "type": "integer",
+      "default": 1,
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Plus reveals allowed per month for a non-converter after D30. SoT s8 (after D30, once per month). After D30 a non-converter sees no NEW triggers — focus shifts to retention; this is the single allowed recurring touch. Max pinned at 1."
+    },
+    "funnel.accelHint.maxPerTilePerWeek": {
+      "type": "integer",
+      "default": 1,
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Max accelerator hints per tile per week. SoT s8 (max 1 per tile per week). Max pinned at 1 so tuning can only quiet the hint. A hint is a passive UI cue, never a modal or push (SoT s10).",
+      "comment": "Pairs with funnel.accelHint.cooldownDays: never hint a player who used an accelerator in the past 7 days."
+    },
+    "funnel.accelHint.cooldownDays": {
+      "type": "integer",
+      "default": 7,
+      "minimum": 7,
+      "maximum": 30,
+      "description": "Days after a player USES an accelerator during which accelerator hints are suppressed for them. SoT s8 (never to a player who used one in the past 7 days). Minimum pinned at 7 so tuning can only lengthen the quiet period, never shorten it below the contract."
+    },
+    "funnel.retry.minConsecutiveLosses": {
+      "type": "integer",
+      "default": 3,
+      "minimum": 3,
+      "maximum": 10,
+      "description": "Consecutive losses ON THE SAME MATCH required before a retry-token offer may appear. SoT s8 (only after 3 consecutive losses on the same match; never on first loss). Minimum pinned at 3 so tuning can only make the offer LATER/rarer, never surface it on the first loss."
+    },
+    "funnel.postD30.suppressNewTriggers": {
+      "type": "boolean",
+      "default": true,
+      "description": "Hard kill-switch for the post-D30 no-new-triggers branch. SoT s8 (after D30 a non-converter sees NO new triggers — focus shifts to retention). When true the funnel engine hard-branches off all new triggers for a non-converter at day_index >= 30. A safety toggle that sells no power either way."
+    },
+    "funnel.d3.starterPackUsd": {
+      "type": "number",
+      "default": 0.99,
+      "minimum": 0.99,
+      "maximum": 4.99,
+      "description": "USD price of the D3 Shard starter pack (single banner in the Shop tab). SoT s7/s8 (D3 first offer: $0.99 Shard starter pack). Shard packs are always visible in Shop and never auto-presented after D3 (SoT s8). Price-display dial; actual StoreKit price tier is set in App Store Connect and must match. Min pinned at 0.99 to honor the stated entry price."
+    },
+
+    "battlepass.seasonDays": {
+      "type": "integer",
+      "default": 30,
+      "minimum": 14,
+      "maximum": 60,
+      "description": "Length of a Battle Pass season in days. SoT s7 (30-day season). Rewards are cosmetic-only on both free and premium tracks and the free track is F2P-completable; tuning season length never bundles power. Cadence dial only."
+    },
+    "shop.rotationDays": {
+      "type": "integer",
+      "default": 14,
+      "minimum": 7,
+      "maximum": 30,
+      "description": "Cosmetic-shop rotation period in days. SoT s7 (14-day rotation). Cadence dial for cosmetic freshness only."
+    },
+    "shop.skusPerRotation.min": {
+      "type": "integer",
+      "default": 3,
+      "minimum": 1,
+      "maximum": 5,
+      "description": "Minimum cosmetic SKUs offered per rotation. SoT s7 (3–5 SKUs per rotation). Content-volume dial; cosmetics only, never power. Must stay <= shop.skusPerRotation.max."
+    },
+    "shop.skusPerRotation.max": {
+      "type": "integer",
+      "default": 5,
+      "minimum": 1,
+      "maximum": 5,
+      "description": "Maximum cosmetic SKUs offered per rotation. SoT s7 (3–5 SKUs). Max pinned at 5 to match the contract. Must stay >= shop.skusPerRotation.min."
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "name": "keepfall-api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Keepfall Phase 1 backend — accounts, cloud save, StoreKit 2 receipt validation, retry-token authority. Single-player PvE only.",
+  "scripts": {
+    "dev": "wrangler dev",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "deploy": "wrangler deploy",
+    "db:migrate": "wrangler d1 migrations apply DB --local"
+  },
+  "devDependencies": {
+    "@cloudflare/vitest-pool-workers": "^0.5.40",
+    "@cloudflare/workers-types": "^4.20250620.0",
+    "typescript": "^5.5.4",
+    "vitest": "^2.1.9",
+    "wrangler": "^3.114.0"
+  }
+}

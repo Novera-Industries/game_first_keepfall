@@ -1,0 +1,157 @@
+{
+  "$schema": "https://keepfall.dev/schemas/design-tokens.v1.json",
+  "meta": {
+    "name": "Keepfall Design Tokens",
+    "version": "1.0.0",
+    "phase": "Phase 1 (single-player PvE, iOS)",
+    "source": "docs/00-source-of-truth.md",
+    "tracesTo": "Keepfall Master Design Document v1.0 (June 2026)",
+    "note": "Sunset-leaning brand: warm oranges, dusk purples, deep blues. Painterly but readable at small mobile sizes. No aggressive red alarm styling. No exclamation points in any string token.",
+    "lastUpdated": "2026-06-20"
+  },
+
+  "color": {
+    "bg": {
+      "base":      { "value": "#1A1230", "comment": "Dark plum/indigo brand background (matches master PDF)." },
+      "deep":      { "value": "#120B24", "comment": "Deepest plum, used behind painterly art and modal scrims." },
+      "raised":    { "value": "#241945", "comment": "One step up from bg for layered dusk surfaces." }
+    },
+    "surface": {
+      "1":         { "value": "#2A1E4D", "comment": "Default card/panel surface on dusk background." },
+      "2":         { "value": "#352763", "comment": "Elevated surface (sheets, popovers)." },
+      "3":         { "value": "#41307A", "comment": "Highest surface, selected/active panels." },
+      "overlayScrim": { "value": "rgba(18,11,36,0.72)", "comment": "Atmospheric fog scrim behind sheets. Calm, low-contrast." }
+    },
+    "border": {
+      "subtle":    { "value": "rgba(255,255,255,0.08)", "comment": "Hairline divider on dusk surfaces." },
+      "default":   { "value": "rgba(255,255,255,0.16)", "comment": "Standard component border." },
+      "strong":    { "value": "rgba(255,255,255,0.28)", "comment": "Focus / selected outline." }
+    },
+    "primary": {
+      "indigo":    { "value": "#5B6BE1", "comment": "Brand blue section accent. Primary interactive color." },
+      "indigoHi":  { "value": "#7E8BF0", "comment": "Indigo hover / pressed-lighten." },
+      "indigoLo":  { "value": "#3D4AAE", "comment": "Indigo pressed / on-light." }
+    },
+    "accent": {
+      "magenta":   { "value": "#E2459B", "comment": "Brand magenta-pink accent (matches master PDF accent)." },
+      "magentaHi": { "value": "#F06BB4", "comment": "Magenta hover / glow." },
+      "magentaLo": { "value": "#B82E78", "comment": "Magenta pressed." }
+    },
+    "sunset": {
+      "orange":    { "value": "#F2853B", "comment": "Warm sunset orange for painterly rim light and warm CTAs." },
+      "amberGlow": { "value": "#FFB066", "comment": "Soft rim-light highlight, low-fog atmosphere." },
+      "duskPurple":{ "value": "#7A4CC2", "comment": "Dusk purple mid-tone for gradients and fog." },
+      "deepBlue":  { "value": "#2C3E8C", "comment": "Deep blue horizon, grounds the sunset gradient." }
+    },
+    "currency": {
+      "stoneGold": { "value": "#E6B450", "comment": "Stone — soft earned currency. Warm gold, never garish." },
+      "stoneGoldHi": { "value": "#F4CE78", "comment": "Stone highlight / coin glint." },
+      "shardViolet": { "value": "#A674F0", "comment": "Shards — premium IAP currency. Calm violet." },
+      "shardVioletHi": { "value": "#C29BFA", "comment": "Shard highlight / facet glint." }
+    },
+    "role": {
+      "vanguard":   { "value": "#3A5FB0", "accentSecondary": "#8A97A6", "comment": "Deep blue + steel. Tank / frontline." },
+      "skirmisher": { "value": "#E0982E", "accentSecondary": "#8A6A45", "comment": "Amber + leather brown. Mobility / flanking." },
+      "archer":     { "value": "#3E8E5A", "accentSecondary": "#D8CBB0", "comment": "Forest green + bone. Ranged single-target." },
+      "mage":       { "value": "#8E5BD4", "accentSecondary": "#F2853B", "comment": "Violet + ember orange. AoE / control." },
+      "engineer":   { "value": "#6B7480", "accentSecondary": "#C77B45", "comment": "Slate grey + copper. Buildings / traps." },
+      "champion":   { "value": "#C0392B", "accentSecondary": "#E6B450", "comment": "Crimson + gold. Win-condition unit. Crimson is a UNIT identity color, never a system alarm." }
+    },
+    "state": {
+      "success":      { "value": "#4FB286", "comment": "Calm teal-green confirmation. Used for valid deck, claim done." },
+      "successSoft":  { "value": "rgba(79,178,134,0.16)", "comment": "Success fill background." },
+      "info":         { "value": "#5B6BE1", "comment": "Informational — reuses brand indigo." },
+      "infoSoft":     { "value": "rgba(91,107,225,0.16)", "comment": "Info fill background." },
+      "caution":      { "value": "#E0982E", "comment": "Soft amber for gentle correction (deck validator). NOT red. NOT an alarm." },
+      "cautionSoft":  { "value": "rgba(224,152,46,0.16)", "comment": "Caution fill background." },
+      "comment":      "There is intentionally NO aggressive red 'error/alarm' token. Corrections are amber and second-person. Defeat is neutral, never punishing red."
+    },
+    "text": {
+      "primary":   { "value": "#F4F1FA", "comment": "Primary text on dusk surfaces. Warm off-white." },
+      "secondary": { "value": "#C4BBDC", "comment": "Secondary / supporting text." },
+      "tertiary":  { "value": "#8E84AE", "comment": "Muted captions, timestamps, disabled labels." },
+      "onAccent":  { "value": "#1A1230", "comment": "Dark text placed on gold/amber bright fills." },
+      "onPrimary": { "value": "#FFFFFF", "comment": "Text on indigo/magenta fills." }
+    }
+  },
+
+  "spacing": {
+    "comment": "4pt base scale. Mobile-first; touch targets never below 44pt.",
+    "0": "0px",
+    "1": "4px",
+    "2": "8px",
+    "3": "12px",
+    "4": "16px",
+    "5": "20px",
+    "6": "24px",
+    "8": "32px",
+    "10": "40px",
+    "12": "48px",
+    "16": "64px",
+    "touchTargetMin": "44px"
+  },
+
+  "radius": {
+    "none": "0px",
+    "sm": "6px",
+    "md": "10px",
+    "lg": "16px",
+    "xl": "24px",
+    "pill": "999px",
+    "comment": "Pill is used for the currency wallet and primary CTAs. Cards use lg."
+  },
+
+  "elevation": {
+    "comment": "Soft, low-contrast shadows tuned for the painterly dusk theme. No hard black drop shadows.",
+    "0": { "shadow": "none" },
+    "1": { "shadow": "0 1px 2px rgba(18,11,36,0.40)" },
+    "2": { "shadow": "0 4px 12px rgba(18,11,36,0.45)" },
+    "3": { "shadow": "0 8px 24px rgba(18,11,36,0.50)" },
+    "glowAccent": { "shadow": "0 0 16px rgba(226,69,155,0.35)", "comment": "Reserved for ready-to-claim tile rim glow only. Calm pulse, never a flash." },
+    "glowReady":  { "shadow": "0 0 20px rgba(230,180,80,0.30)", "comment": "Stone-gold glow on a tile at cap, signalling ready-to-claim." }
+  },
+
+  "type": {
+    "family": {
+      "ui":      { "value": "Inter", "fallback": "system-ui, -apple-system, 'SF Pro Text', sans-serif", "comment": "Humanist sans for all UI body, labels, numerals." },
+      "display": { "value": "Fraunces", "fallback": "'SF Pro Display', Georgia, serif", "weight": 600, "comment": "Display weight for titles, screen headers, key-art-adjacent text. Painterly, editorial feel." },
+      "numeric": { "value": "Inter", "feature": "tnum", "comment": "Tabular numerals for currency, elixir, timers — prevents jitter as values change." }
+    },
+    "scale": {
+      "comment": "Sizes in pt. lineHeight unitless. Mobile-tuned; smallest readable label is caption=12.",
+      "displayXL": { "size": 34, "lineHeight": 1.15, "weight": 600, "family": "display", "comment": "App title, Plus value-screen headline." },
+      "displayL":  { "size": 28, "lineHeight": 1.18, "weight": 600, "family": "display", "comment": "Screen headers." },
+      "titleL":    { "size": 22, "lineHeight": 1.25, "weight": 600, "family": "ui" },
+      "titleM":    { "size": 18, "lineHeight": 1.3,  "weight": 600, "family": "ui", "comment": "Card titles, section heads." },
+      "body":      { "size": 16, "lineHeight": 1.45, "weight": 400, "family": "ui", "comment": "Default body. Minimum size for sustained reading." },
+      "bodyStrong":{ "size": 16, "lineHeight": 1.45, "weight": 600, "family": "ui" },
+      "label":     { "size": 14, "lineHeight": 1.3,  "weight": 500, "family": "ui", "comment": "Buttons, chips, wallet pill." },
+      "caption":   { "size": 12, "lineHeight": 1.35, "weight": 500, "family": "ui", "comment": "Timestamps, validator hints, footnotes." },
+      "numXL":     { "size": 28, "lineHeight": 1.0,  "weight": 700, "family": "numeric", "comment": "Big yield / Stone totals." },
+      "numM":      { "size": 16, "lineHeight": 1.0,  "weight": 700, "family": "numeric", "comment": "Wallet pill values, elixir count." }
+    }
+  },
+
+  "motion": {
+    "comment": "Calm, short, purposeful. No confetti. No celebratory bounce. Claim is silent. No countdown-pressure animation. No FOMO modal entrance.",
+    "duration": {
+      "instant": "80ms",
+      "fast":    "140ms",
+      "base":    "220ms",
+      "slow":    "320ms",
+      "ambient": "2400ms",
+      "comment": "ambient is for the slow, looping tile-fill shimmer and ready-to-claim glow pulse only."
+    },
+    "easing": {
+      "standard": "cubic-bezier(0.4, 0.0, 0.2, 1)",
+      "decelerate": "cubic-bezier(0.0, 0.0, 0.2, 1)",
+      "accelerate": "cubic-bezier(0.4, 0.0, 1, 1)",
+      "gentle": "cubic-bezier(0.33, 0.0, 0.2, 1)",
+      "comment": "No spring/overshoot easings are defined on purpose — overshoot reads as celebratory bounce, which is banned for purchases and claims."
+    },
+    "reducedMotion": {
+      "comment": "When the OS requests reduced motion: disable all ambient loops and tile shimmer, replace transitions with cross-fade at duration.fast.",
+      "fallback": "opacity-only cross-fade, 140ms"
+    }
+  }
+}

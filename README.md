@@ -73,9 +73,9 @@ accrues Stone against the wall clock, and exposes silent-claim / unit-unlock act
 
 [`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs on push/PR:
 - **backend** — `npm ci` + `tsc --noEmit` + the full Vitest suite on a clean checkout (no spaces → the path caveat above does not bite in CI).
-- **unity-tests** — the EditMode suite via [game-ci](https://game.ci). Add repo secrets `UNITY_LICENSE` (or `UNITY_SERIAL`) + `UNITY_EMAIL` + `UNITY_PASSWORD` to enable it; without them the job skips cleanly. This is how the 22 EditMode tests + the editor scripts get compiled and run, since no Unity runner exists locally.
+- **unity-tests** — the EditMode suite via [game-ci](https://game.ci). **Opt-in:** set repo variable `UNITY_TESTS_ENABLED=true` and add secrets `UNITY_LICENSE` (or `UNITY_SERIAL`) + `UNITY_EMAIL` + `UNITY_PASSWORD`. Until then the job is skipped (neutral), so CI stays green on the backend alone. This is how the EditMode tests + editor scripts get compiled and run, since no Unity runner exists locally.
 
-Requires pushing to a GitHub remote (none configured yet: `git remote add origin …`).
+Remote: `origin` → https://github.com/Novera-Industries/game_first_keepfall.git
 
 ## Non-negotiables (enforced + audited)
 

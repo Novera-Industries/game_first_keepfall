@@ -93,6 +93,15 @@ simulates subscribe → 3 monthly drops → cancel (cosmetics kept). One tier, $
 curve is pinned by `DifficultyCurveTests`; retry authority lives in the Worker (`retry.test.ts`,
 `retry.routes.test.ts`) with `RetryTokenClient` deferring to it (`RetryTokenClientTests`).
 
+**Milestone 07 — Funnel + Analytics:** **Keepfall ▸ Funnel** simulates the 30-day conversion funnel
+and the post-D30 hard branch. The conversion model is measurable — [docs/kpi-dashboard.md](docs/kpi-dashboard.md)
+maps every KPI and trigger to its events; `FunnelConversionTests` (+ the cap/gating/post-D30 tests)
+pin the engine.
+
+**Milestone 08 — Soft launch:** CA/AU/NZ App Store deliverables — [store listing](docs/store-listing.md),
+[ASO screenshots](docs/aso-screenshots.md), and the [submission checklist](docs/soft-launch-submission.md)
+(TestFlight, StoreKit products, App Privacy labels, phased release, day-90 gate). Calm, no-exclamation copy.
+
 ## Continuous integration
 
 [`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs on push/PR:

@@ -204,3 +204,12 @@
 - **Tests that must pass:** full regression of milestones 01–07 green on `main`; sandbox →
   production StoreKit smoke (purchase, renewal, retry); guardrail checklist clean on the
   release build; crash-free ≥ 99% on the TestFlight external cohort before widening rollout.
+- **Now in this repo:** the soft-launch deliverables are drafted —
+  [`docs/store-listing.md`](store-listing.md) (CA/AU/NZ App Store copy: name, subtitle, promo text,
+  description, keywords — all calm, zero exclamation points, no pay-to-win language),
+  [`docs/aso-screenshots.md`](aso-screenshots.md) (the 6 screenshot frames + captions + device
+  sizes, mapped to the art pipeline), and [`docs/soft-launch-submission.md`](soft-launch-submission.md)
+  (TestFlight + App Store Connect checklist: the StoreKit products from
+  [`config/iap-catalog.json`](../config/iap-catalog.json), App Privacy labels, export compliance,
+  phased CA/AU/NZ release, day-90 gate cross-referencing the [operator runbook](operator-runbook.md)).
+  The remaining work is operational: the signed build, ASC product setup, and the actual screenshot art.

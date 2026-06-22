@@ -180,6 +180,14 @@
 - **Tests that must pass:** trigger-reads-state-not-clock, each frequency cap, **D30
   no-new-triggers hard branch**, "no FOMO/discount modal on app open", "no IAP push
   notification", KPI-event-coverage (every §9 metric has its event).
+- **Now in this repo:** the `FunnelEngine` (state-gated triggers, frequency caps, post-D30 hard
+  branch) is covered by `FunnelFrequencyCapTests` / `FunnelPostD30Tests` / `FunnelStateGatingTests`
+  plus the new `FunnelConversionTests` (each key trigger fires on its precondition, presentations
+  are non-modal + dismissible only, a D31 non-converter returns None). **The conversion model is
+  measurable**: [`docs/kpi-dashboard.md`](kpi-dashboard.md) maps every §9 KPI to its feeding events
+  + formula and every trigger_id to its bracketing/conversion events; analytics-taxonomy has the
+  KPI section. Editor on-ramp: **Keepfall ▸ Funnel** (simulate the 30-day funnel; show the post-D30
+  hard branch).
 
 ## Milestone 08 — Soft Launch
 

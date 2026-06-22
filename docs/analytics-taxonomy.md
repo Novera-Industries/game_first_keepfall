@@ -234,6 +234,12 @@ notification sells IAP.
 Each `SoT §9` KPI is derivable from the events above. The dashboard reads these joins;
 no KPI depends on a value absent from the source of truth.
 
+> The full **measurability spec** — per-KPI tool (GameAnalytics vs Firebase), the
+> conversion-funnel measurability table (each `trigger_id` → precondition → placement →
+> frequency cap → fired/suppressed brackets → conversion event), and the post-D30 hard-branch
+> observation — lives in [`kpi-dashboard.md`](./kpi-dashboard.md). It mirrors this section and
+> the §6 registry; keep the two consistent (change here first, then the dashboard spec).
+
 | KPI (`SoT §9` target) | Source events | Derivation |
 | --- | --- | --- |
 | **D1 retention** (≥ 40%) | `install`, `day_index{is_d1}` | `count(distinct user with day_index event where is_d1) / count(install)`. Health context: `tutorial_complete`, `tutorial_step` (D1 polish, no D1–D2 monetization friction). |

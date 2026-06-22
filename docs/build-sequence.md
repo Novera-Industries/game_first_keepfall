@@ -109,6 +109,12 @@
   power/combat reward. Keep rebased on `main` so shared Monetization files don't diverge from 03.
 - **Tests that must pass:** "every Battle Pass reward is a cosmetic" (no power/stat/unit/tile),
   free-track-completable-F2P, "tier skip grants no power" test, 30-day-season-length test.
+- **Now in this repo:** `BattlePassService` enforces the cosmetic-only + power-free-skip
+  guarantees (`BattlePassCosmeticOnlyTests`). **Season 1 content is ready** — "Sunset Watch", 30
+  tiers / 30 days, **12 cosmetics (5 free + 7 premium)** in
+  [`config/battlepass-season1.json`](../config/battlepass-season1.json), mirrored in
+  `BattlePassSeason1` and pinned by `BattlePassSeason1Tests` (counts, distinct ids, free-track
+  completable, premium adds only cosmetics). Editor on-ramp: **Keepfall ▸ Battle Pass**.
 
 ## Milestone 05 — Keepfall Plus
 

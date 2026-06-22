@@ -1,0 +1,32 @@
+{
+  "_meta": {
+    "schemaVersion": 1,
+    "source": "docs/00-source-of-truth.md §7; Higgsfield brief Part B (8-12 SKUs)",
+    "lastUpdated": "PLACEHOLDER - set on release",
+    "policy": "Cosmetic-only on BOTH tracks. Free track completable F2P. Tier-skip carries no power. Never units, tiles-as-power, currency, or stats."
+  },
+  "seasonId": "s1",
+  "seasonName": "Sunset Watch",
+  "seasonDays": 30,
+  "tiers": 30,
+  "rewards": [
+    { "tier": 1,  "track": "premium", "cosmeticId": "cosmetic.s1.banner.sunset_standardbearer", "type": "banner", "displayName": "Sunset Standardbearer" },
+    { "tier": 3,  "track": "free",    "cosmeticId": "cosmetic.s1.border.first_light",            "type": "border", "displayName": "First Light" },
+    { "tier": 6,  "track": "premium", "cosmeticId": "cosmetic.s1.skin.ember_mage",               "type": "skin",   "displayName": "Ember Mage" },
+    { "tier": 8,  "track": "free",    "cosmeticId": "cosmetic.s1.banner.dusk",                   "type": "banner", "displayName": "Dusk Banner" },
+    { "tier": 12, "track": "premium", "cosmeticId": "cosmetic.s1.skin.dusk_vanguard",            "type": "skin",   "displayName": "Dusk Vanguard" },
+    { "tier": 15, "track": "free",    "cosmeticId": "cosmetic.s1.emote.quiet_victory",           "type": "emote",  "displayName": "Quiet Victory" },
+    { "tier": 18, "track": "premium", "cosmeticId": "cosmetic.s1.banner.riverkeep",              "type": "banner", "displayName": "Riverkeep" },
+    { "tier": 22, "track": "free",    "cosmeticId": "cosmetic.s1.border.wayfarer",               "type": "border", "displayName": "Wayfarer" },
+    { "tier": 24, "track": "premium", "cosmeticId": "cosmetic.s1.border.gilded_hoard",           "type": "border", "displayName": "Gilded Hoard" },
+    { "tier": 28, "track": "premium", "cosmeticId": "cosmetic.s1.emote.marshals_salute",         "type": "emote",  "displayName": "Marshal's Salute" },
+    { "tier": 30, "track": "free",    "cosmeticId": "cosmetic.s1.tile.lone_tile",                "type": "tile",   "displayName": "Lone Tile" },
+    { "tier": 30, "track": "premium", "cosmeticId": "cosmetic.s1.tile.golden_hour_fortress",     "type": "tile",   "displayName": "Golden Hour Fortress" }
+  ],
+  "notes": {
+    "counts": "12 distinct cosmetics = 5 free + 7 premium (within the Higgsfield 8-12 SKU brief).",
+    "freeCompletion": "Reaching tier 30 grants all 5 free cosmetics; the free track is completable with no spend.",
+    "capstones": "Tier 30 free = Lone Tile; tier 30 premium = Golden Hour Fortress.",
+    "artContract": "type + displayName feed the Higgsfield/illustrator pipeline; the Unity client only needs tier/track/cosmeticId."
+  }
+}

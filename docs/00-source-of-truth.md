@@ -209,6 +209,31 @@ tiles, or power.
 - **Free track completable F2P.**
 - **Tier-skip consumable** available — **do not bundle power** with it.
 
+### Battle Pass Season 1 — "Sunset Watch"
+
+30 tiers over 30 days. **12 cosmetics = 5 free + 7 premium** (within the Part B Higgsfield
+8–12 SKU brief). Reaching tier 30 completes the free track with no spend. Canonical data:
+[`config/battlepass-season1.json`](../config/battlepass-season1.json); the Unity client mirrors
+it in `BattlePassSeason1`. `type` + `displayName` are the art-pipeline contract.
+
+| Tier | Track | Cosmetic | Type | Id |
+| --- | --- | --- | --- | --- |
+| 1 | Premium | Sunset Standardbearer | banner | `cosmetic.s1.banner.sunset_standardbearer` |
+| 3 | Free | First Light | border | `cosmetic.s1.border.first_light` |
+| 6 | Premium | Ember Mage | skin | `cosmetic.s1.skin.ember_mage` |
+| 8 | Free | Dusk Banner | banner | `cosmetic.s1.banner.dusk` |
+| 12 | Premium | Dusk Vanguard | skin | `cosmetic.s1.skin.dusk_vanguard` |
+| 15 | Free | Quiet Victory | emote | `cosmetic.s1.emote.quiet_victory` |
+| 18 | Premium | Riverkeep | banner | `cosmetic.s1.banner.riverkeep` |
+| 22 | Free | Wayfarer | border | `cosmetic.s1.border.wayfarer` |
+| 24 | Premium | Gilded Hoard | border | `cosmetic.s1.border.gilded_hoard` |
+| 28 | Premium | Marshal's Salute | emote | `cosmetic.s1.emote.marshals_salute` |
+| 30 | Free | Lone Tile (capstone) | tile | `cosmetic.s1.tile.lone_tile` |
+| 30 | Premium | Golden Hour Fortress (capstone) | tile | `cosmetic.s1.tile.golden_hour_fortress` |
+
+Every entry is a cosmetic — no unit, currency, tile-as-power, or stat. The premium track is a
+cosmetic purchase; owning it never confers a combat advantage.
+
 ---
 
 ## 8. 30-day conversion funnel

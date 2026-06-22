@@ -78,6 +78,11 @@ editor. StoreKit 2 sandbox testing uses `unity/StoreKitConfig/Keepfall.storekit`
 (`unity/Assets/Editor/TileInteractionDemo.cs`) prints the complete accrue → accelerate → claim
 loop to the Console (no Play mode needed); `TileInteractionLoopTests` verifies it in CI.
 
+**Milestone 04 — Battle Pass Season 1:** **Keepfall ▸ Battle Pass** logs the "Sunset Watch"
+track (30 tiers, 12 cosmetics = 5 free + 7 premium) and simulates free-track completion / premium
+unlock. Canonical content: [config/battlepass-season1.json](config/battlepass-season1.json);
+`BattlePassSeason1Tests` pins it.
+
 ## Continuous integration
 
 [`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs on push/PR:

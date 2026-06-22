@@ -1,0 +1,33 @@
+{
+  "_meta": {
+    "schemaVersion": 1,
+    "source": "docs/00-source-of-truth.md §6, §7",
+    "lastUpdated": "PLACEHOLDER — set on release",
+    "policy": "Premium currency + one subscription tier only. Never units, tiles, or power. $/Shard improves with size (bulk convenience, not advantage).",
+    "bundleId": "com.vyradata.keepfall",
+    "storefronts": ["CAN", "AUS", "NZL"]
+  },
+  "shardPacks": [
+    { "id": "starter", "productId": "com.vyradata.keepfall.shards.starter", "usd": 0.99, "shards": 100, "displayName": "Starter Shards", "isD3StarterOffer": true },
+    { "id": "pouch",   "productId": "com.vyradata.keepfall.shards.pouch",   "usd": 4.99, "shards": 550, "displayName": "Pouch of Shards" },
+    { "id": "chest",   "productId": "com.vyradata.keepfall.shards.chest",   "usd": 9.99, "shards": 1200, "displayName": "Chest of Shards" },
+    { "id": "vault",   "productId": "com.vyradata.keepfall.shards.vault",   "usd": 19.99, "shards": 2600, "displayName": "Vault of Shards" },
+    { "id": "hoard",   "productId": "com.vyradata.keepfall.shards.hoard",   "usd": 49.99, "shards": 7000, "displayName": "Hoard of Shards" }
+  ],
+  "subscriptions": [
+    {
+      "id": "plus",
+      "productId": "com.vyradata.keepfall.plus.monthly",
+      "usd": 5.99,
+      "period": "P1M",
+      "subscriptionGroup": "keepfall_plus",
+      "freeTrial": { "enabled": true, "period": "P1W" },
+      "displayName": "Keepfall Plus"
+    }
+  ],
+  "notes": {
+    "consumableGrant": "shards field is server-authoritative — the Worker returns it on receipt validation; the client credits the returned amount.",
+    "cosmetics": "Cosmetic shop SKUs are priced in in-game currency (Stone or Shards), not StoreKit products, so they are NOT listed here.",
+    "valueMonotonicity": "shardPacks must be ordered by ascending usd, and usd/shards must strictly decrease (better value at higher tiers)."
+  }
+}

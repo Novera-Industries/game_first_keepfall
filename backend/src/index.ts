@@ -19,6 +19,7 @@ import { upsertAccount } from "./lib/accounts";
 import { pushSave, pullSave } from "./lib/saves";
 import {
   appleStoreKitVerifier,
+  decideConsumable,
   decideEntitlement,
   isPlusActive,
   type JwsVerifier,
@@ -241,40 +242,42 @@ async function handleReceiptValidate(
   //    double-grants (consumables) or double-applies (subscriptions).
   const alreadyProcessed = await receiptExists(env.DB, txn.transactionId);
 
-  if (!alreadyProcessed) {
-    await env.DB.prepare(
-      `INSERT INTO receipts
-         (id, account_id, product_id, transaction_id, original_transaction_id,
-          type, verified_utc, raw)
-       VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)
-       ON CONFLICT (transaction_id) DO NOTHING`,
-    )
-      .bind(
-        newId(),
-        accountId,
-        txn.productId,
-        txn.transactionId,
-        txn.originalTransactionId,
-        txn.type,
-        now,
-        body.signedTransaction,
-      )
-      .run();
-  }
-
-  // 3. Consumables (retry tokens, Shard packs) just record idempotently.
+  // 3. Consumables (Shard packs) → resolve the SERVER-AUTHORITATIVE Shard grant
+  //    from the canonical ladder (§7) BEFORE recording anything. An unknown
+  //    consumable productId is rejected outright; the Worker never records or
+  //    grants for a product it does not recognize.
   if (txn.type === "consumable") {
+    const outcome = decideConsumable(txn, alreadyProcessed);
+    if (outcome.status !== "consumable") {
+      // decideConsumable only ever rejects with "unknown_product" here.
+      const reason = outcome.status === "rejected" ? outcome.reason : "unknown_product";
+      return err(422, reason, "Unknown product. No Shards were granted.");
+    }
+
+    if (!alreadyProcessed) {
+      await recordReceipt(env, accountId, txn, body.signedTransaction, now);
+    }
+
     return json({
       status: "consumable",
-      productId: txn.productId,
-      transactionId: txn.transactionId,
-      alreadyProcessed,
+      productId: outcome.productId,
+      transactionId: outcome.transactionId,
+      // Authoritative grant from the catalog. On a replay the client honours
+      // alreadyProcessed and must NOT double-credit (it credits only the first time).
+      shardsGranted: outcome.shardsGranted,
+      alreadyProcessed: outcome.alreadyProcessed,
     });
   }
 
-  // 4. Subscriptions / non-consumables → compute + upsert entitlement.
-  //    Cosmetics earned during a subscription are KEPT on cancellation (§6):
-  //    even when active flips to false we report retainedCosmetics:true.
+  // Subscriptions / non-consumables → record the receipt idempotently, then
+  // compute + upsert the entitlement below.
+  if (!alreadyProcessed) {
+    await recordReceipt(env, accountId, txn, body.signedTransaction, now);
+  }
+
+  // 4. Compute + upsert entitlement. Cosmetics earned during a subscription are
+  //    KEPT on cancellation (§6): even when active flips to false we report
+  //    retainedCosmetics:true.
   const decision = decideEntitlement(txn, now);
   await env.DB.prepare(
     `INSERT INTO entitlements (account_id, product_id, kind, active, period_end_utc)
@@ -531,6 +534,39 @@ async function handleRetryGrantDaily(req: Request, env: Env): Promise<Response> 
 }
 
 // ── helpers ──────────────────────────────────────────────────────────────────
+
+/**
+ * Insert a receipt row idempotently (keyed by transaction_id). Callers gate this
+ * on !alreadyProcessed; the ON CONFLICT DO NOTHING is belt-and-suspenders against
+ * a concurrent replay. Unknown consumables are rejected before reaching here, so a
+ * recorded receipt always corresponds to a known product.
+ */
+async function recordReceipt(
+  env: Env,
+  accountId: string,
+  txn: { productId: string; transactionId: string; originalTransactionId: string; type: string },
+  signedTransaction: string,
+  now: number,
+): Promise<void> {
+  await env.DB.prepare(
+    `INSERT INTO receipts
+       (id, account_id, product_id, transaction_id, original_transaction_id,
+        type, verified_utc, raw)
+     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)
+     ON CONFLICT (transaction_id) DO NOTHING`,
+  )
+    .bind(
+      newId(),
+      accountId,
+      txn.productId,
+      txn.transactionId,
+      txn.originalTransactionId,
+      txn.type,
+      now,
+      signedTransaction,
+    )
+    .run();
+}
 
 function toSnapshot(row: MatchAttemptRow): AttemptSnapshot {
   return {

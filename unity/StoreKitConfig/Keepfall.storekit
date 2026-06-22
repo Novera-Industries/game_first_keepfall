@@ -1,0 +1,132 @@
+{
+  "identifier" : "B1A7C0DE-0000-4000-8000-000000000001",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "0.99",
+      "familyShareable" : false,
+      "internalID" : "B1A7C0DE-0000-4000-8000-000000000010",
+      "localizations" : [
+        {
+          "description" : "A small starting amount of Shards.",
+          "displayName" : "Starter Shards",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.vyradata.keepfall.shards.starter",
+      "referenceName" : "Starter Shards (100)",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "4.99",
+      "familyShareable" : false,
+      "internalID" : "B1A7C0DE-0000-4000-8000-000000000011",
+      "localizations" : [
+        {
+          "description" : "A pouch of Shards.",
+          "displayName" : "Pouch of Shards",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.vyradata.keepfall.shards.pouch",
+      "referenceName" : "Pouch of Shards (550)",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "9.99",
+      "familyShareable" : false,
+      "internalID" : "B1A7C0DE-0000-4000-8000-000000000012",
+      "localizations" : [
+        {
+          "description" : "A chest of Shards.",
+          "displayName" : "Chest of Shards",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.vyradata.keepfall.shards.chest",
+      "referenceName" : "Chest of Shards (1200)",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "19.99",
+      "familyShareable" : false,
+      "internalID" : "B1A7C0DE-0000-4000-8000-000000000013",
+      "localizations" : [
+        {
+          "description" : "A vault of Shards.",
+          "displayName" : "Vault of Shards",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.vyradata.keepfall.shards.vault",
+      "referenceName" : "Vault of Shards (2600)",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "49.99",
+      "familyShareable" : false,
+      "internalID" : "B1A7C0DE-0000-4000-8000-000000000014",
+      "localizations" : [
+        {
+          "description" : "A large hoard of Shards.",
+          "displayName" : "Hoard of Shards",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.vyradata.keepfall.shards.hoard",
+      "referenceName" : "Hoard of Shards (7000)",
+      "type" : "Consumable"
+    }
+  ],
+  "settings" : {
+    "_failTransactionsEnabled" : false,
+    "_locale" : "en_US",
+    "_storefront" : "USA"
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "B1A7C0DE-0000-4000-8000-000000000020",
+      "localizations" : [
+
+      ],
+      "name" : "keepfall_plus",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "5.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "B1A7C0DE-0000-4000-8000-000000000021",
+          "introductoryOffer" : {
+            "internalID" : "B1A7C0DE-0000-4000-8000-000000000022",
+            "paymentMode" : "free",
+            "subscriptionPeriod" : "P1W"
+          },
+          "localizations" : [
+            {
+              "description" : "Keepfall Plus: +50% tile yield, an extra deck slot, daily Shards, and a monthly cosmetic. Cosmetics are yours to keep.",
+              "displayName" : "Keepfall Plus",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "com.vyradata.keepfall.plus.monthly",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Keepfall Plus",
+          "subscriptionGroupID" : "B1A7C0DE-0000-4000-8000-000000000020",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  }
+}

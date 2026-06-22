@@ -339,14 +339,27 @@ namespace Keepfall.Monetization
                     "We could not verify that purchase. You were not charged for Shards.");
             }
 
-            _wallet.Add(CurrencyType.Shards, sku.ShardsGranted);
+            // Idempotency (§6/§7): a re-validated transaction reports the grant again, but the
+            // client must NOT double-credit. Honour the server's verdict — credit nothing and
+            // report a calm success so the player is never charged-without-credit nor double-paid.
+            if (verdict.AlreadyProcessed)
+            {
+                return new ShopPurchaseResult(true, "already_processed",
+                    "Those Shards were already added to your wallet.");
+            }
+
+            // The product→Shards mapping is SERVER-AUTHORITATIVE (§7): credit the amount the
+            // Worker returned. Fall back to the SKU's catalog value only if the server omitted
+            // it (older response), never preferring the client number over a positive server one.
+            int credited = verdict.ShardsGranted > 0 ? verdict.ShardsGranted : sku.ShardsGranted;
+            _wallet.Add(CurrencyType.Shards, credited);
 
             _analytics?.Track(Events.ShardPackPurchase, new Dictionary<string, object>
             {
                 ["sku"] = sku.Id,
                 ["kind"] = "shard_pack",
                 ["product_id"] = sku.StoreKitProductId,
-                ["shards_granted"] = sku.ShardsGranted,
+                ["shards_granted"] = credited,
             });
 
             return new ShopPurchaseResult(true, null, "Shards added to your wallet.");

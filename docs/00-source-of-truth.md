@@ -179,7 +179,30 @@ starting hand**. The player still has to win.
 - **14-day rotation**, **3–5 SKUs** per rotation.
 - Shard IAP packs wired through **StoreKit 2 sandbox**; receipts validated on Cloudflare Workers.
 - Shard packs are **always visible in the Shop tab**, **never auto-presented after D3**.
-- D3 first offer: **$0.99 Shard starter pack** (single banner).
+- D3 first offer: **$0.99 Shard starter pack** (single banner) — this is the `starter` tier below.
+
+### Shard IAP pack ladder (StoreKit 2 consumables)
+
+Five repeatable consumable packs. **Effective $/Shard improves with size** (honest bulk
+convenience — buying more compresses cost, never outcomes). Bundle id prefix
+`com.vyradata.keepfall.shards.*`. USD reference prices (Apple default tiers); real storefronts
+are CA/AU/NZ. Shards are premium currency only — they buy convenience and cosmetics, never units,
+tiles, or power.
+
+| Tier | StoreKit product id | USD | Shards | $/100 Shards |
+| --- | --- | --- | --- | --- |
+| starter | `com.vyradata.keepfall.shards.starter` | 0.99 | 100 | $0.99 |
+| pouch | `com.vyradata.keepfall.shards.pouch` | 4.99 | 550 | $0.91 |
+| chest | `com.vyradata.keepfall.shards.chest` | 9.99 | 1,200 | $0.83 |
+| vault | `com.vyradata.keepfall.shards.vault` | 19.99 | 2,600 | $0.77 |
+| hoard | `com.vyradata.keepfall.shards.hoard` | 49.99 | 7,000 | $0.71 |
+
+- `starter` doubles as the D3 single-banner offer (§8). All five are otherwise always-available
+  in the Shop tab and never auto-presented after D3.
+- The Keepfall Plus subscription (§6 Product 2) is StoreKit product
+  `com.vyradata.keepfall.plus.monthly` — **one tier**, $5.99/month, 7-day free trial.
+- The product→Shards mapping is **server-authoritative**: the Worker validates the receipt and
+  returns the Shard grant for the product; the client credits the server's amount.
 
 ### Battle Pass v1
 - **30-day season.** **Cosmetic-only** rewards on **both** free and premium tracks.

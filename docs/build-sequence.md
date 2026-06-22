@@ -53,6 +53,28 @@
 - **Tests that must pass:** sandbox purchase → Worker validation → wallet credit (happy path),
   duplicate/replayed-receipt rejection, "no auto-present after D3" frequency test, single-banner
   starter-pack test.
+- **Definition of done — now in this repo:**
+  - **Server-authoritative grant.** `backend/src/lib/config.ts` holds the canonical `SHARD_PACKS`
+    map (5 packs) + `shardsForProduct`; `backend/src/lib/receipts.ts` `decideConsumable` returns
+    `shardsGranted` for a known pack and rejects an unknown consumable as `unknown_product`;
+    `POST /v1/receipts/validate` returns `shardsGranted` + `alreadyProcessed` and never records a
+    rejected product. Covered by `backend/test/receipts.test.ts` (known grant, unknown rejection,
+    replay → `alreadyProcessed`).
+  - **Client credits the server amount.** `ValidateReceiptResponse` carries `shardsGranted` +
+    `alreadyProcessed`; `ShopService.BuyShardPackAsync` credits `verdict.ShardsGranted` (fallback
+    to the SKU catalog value) and credits **only** when `Valid && !AlreadyProcessed` — a replay
+    reports a calm success and credits nothing.
+  - **Canonical catalog mirror.** `unity/Assets/Scripts/Monetization/IapCatalog.cs` exposes the 5
+    Shard packs (= `config/iap-catalog.json`), a starter cosmetic pool, and the Plus product id.
+  - **StoreKit seam.** `IStoreKitPurchaser` + `StoreKitPurchase`; `SandboxStoreKitPurchaser`
+    fabricates a backend-acceptable 3-segment JWS (DEV/sandbox only); `NativeStoreKitPurchaser`
+    is the on-device bridge stub (no fake transactions on device).
+  - **Editor on-ramp.** `Keepfall ▸ Shop ▸ Log Current Rotation` and `▸ Simulate Starter Pack
+    Purchase` (with an editor-only fake Worker) run the loop in-editor.
+  - **Tests.** EditMode `IapCatalogTests`, `ShardPurchaseFlowTests`, `SandboxStoreKitPurchaserTests`
+    (mechanically complete; run under Unity Test Runner). Runbook: `docs/storekit-sandbox.md`.
+  - **Not yet:** the native StoreKit 2 bridge and the production Apple Root CA - G3 JWS chain check
+    remain to be wired on a Mac with Xcode (the Worker hard-stops in `production` until then).
 
 ## Milestone 03 — Accelerator
 

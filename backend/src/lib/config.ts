@@ -34,6 +34,32 @@ export type Currency = (typeof CURRENCIES)[number];
 export const PLUS_PRICE_USD = 5.99;
 export const PLUS_PRODUCT_FALLBACK_ID = "com.vyradata.keepfall.plus.monthly";
 
+// ── Shard IAP pack ladder (source-of-truth §7) ───────────────────────────────
+// The product→Shards mapping is SERVER-AUTHORITATIVE: the Worker validates the
+// receipt and returns the Shard grant for the product; the client credits the
+// server's amount, never its own. These five values are CANONICAL and mirror
+// config/iap-catalog.json + unity/.../IapCatalog.cs EXACTLY — do not change a
+// number without changing all three. Shards buy convenience + cosmetics only,
+// never units, tiles, or power (§1, §6, §10).
+export const SHARD_PACKS: Readonly<Record<string, number>> = {
+  "com.vyradata.keepfall.shards.starter": 100,
+  "com.vyradata.keepfall.shards.pouch": 550,
+  "com.vyradata.keepfall.shards.chest": 1200,
+  "com.vyradata.keepfall.shards.vault": 2600,
+  "com.vyradata.keepfall.shards.hoard": 7000,
+};
+
+/**
+ * shardsForProduct — how many Shards a validated consumable purchase grants, or
+ * null when the productId is not a known Shard pack. A null result means the
+ * Worker must REJECT the receipt as an unknown product rather than grant Shards.
+ */
+export function shardsForProduct(productId: string): number | null {
+  return Object.prototype.hasOwnProperty.call(SHARD_PACKS, productId)
+    ? SHARD_PACKS[productId]
+    : null;
+}
+
 // ── PvE Retry Tokens (source-of-truth §6 Product 3) ──────────────────────────
 // Shard pricing.
 export const RETRY_TOKEN_SHARD_COST = 20;

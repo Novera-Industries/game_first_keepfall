@@ -76,6 +76,22 @@ namespace Keepfall.Core.Backend
         [JsonProperty("productId")]
         public string ProductId;
 
+        /// <summary>
+        /// For a consumable Shard pack: how many Shards the Worker grants for this product,
+        /// per the canonical ladder (§7). SERVER-AUTHORITATIVE — the client credits THIS
+        /// amount, not its own catalog value. Zero for non-consumables.
+        /// </summary>
+        [JsonProperty("shardsGranted")]
+        public int ShardsGranted;
+
+        /// <summary>
+        /// True when this transactionId was already validated before (idempotency, §6/§7).
+        /// On a replay the Worker still reports <see cref="ShardsGranted"/>, but the client
+        /// must NOT credit again — it credits only on the first, non-replayed validation.
+        /// </summary>
+        [JsonProperty("alreadyProcessed")]
+        public bool AlreadyProcessed;
+
         /// <summary>For subscriptions: validated period-end (UTC, ISO-8601), else null.</summary>
         [JsonProperty("currentPeriodEndUtc")]
         public string CurrentPeriodEndUtc;

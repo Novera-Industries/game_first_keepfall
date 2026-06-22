@@ -12,7 +12,7 @@
 // logic — the part with the trust commitments — is unit-tested without Apple.
 
 import type { Env } from "./config";
-import { plusProductId } from "./config";
+import { plusProductId, shardsForProduct } from "./config";
 
 /** Product categories we accept (mirrors the receipts.type CHECK). */
 export type ProductType = "consumable" | "subscription" | "nonconsumable";
@@ -59,9 +59,49 @@ export interface EntitlementDecision {
 
 /** Outcome classes returned to the route handler. */
 export type ReceiptOutcome =
-  | { status: "consumable"; productId: string; transactionId: string; alreadyProcessed: boolean }
+  | {
+      status: "consumable";
+      productId: string;
+      transactionId: string;
+      alreadyProcessed: boolean;
+      /**
+       * Shards this product grants, per the canonical ladder (§7). Authoritative:
+       * the client credits THIS amount, not its own. On a replay (alreadyProcessed)
+       * the field still reports the catalog grant, but the client must not
+       * double-credit — it credits only on the first, non-replayed validation.
+       */
+      shardsGranted: number;
+    }
   | { status: "entitlement"; decision: EntitlementDecision }
   | { status: "rejected"; reason: string };
+
+/**
+ * decideConsumable — PURE. Maps a verified consumable transaction to its outcome.
+ * A known Shard pack returns its canonical Shard grant (§7, server-authoritative).
+ * An UNKNOWN consumable productId is rejected("unknown_product") — the Worker
+ * never grants Shards for a product it does not recognize.
+ *
+ * <paramref name="alreadyProcessed"/> carries the idempotency verdict from the
+ * receipts table: the grant is still reported, but the route credits nothing on a
+ * replay (the client honours alreadyProcessed and does not double-credit).
+ */
+export function decideConsumable(
+  txn: VerifiedTransaction,
+  alreadyProcessed: boolean,
+): ReceiptOutcome {
+  const shards = shardsForProduct(txn.productId);
+  if (shards == null) {
+    return { status: "rejected", reason: "unknown_product" };
+  }
+
+  return {
+    status: "consumable",
+    productId: txn.productId,
+    transactionId: txn.transactionId,
+    alreadyProcessed,
+    shardsGranted: shards,
+  };
+}
 
 /**
  * decideEntitlement — PURE. Given a verified transaction and "now", compute the

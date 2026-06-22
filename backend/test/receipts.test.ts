@@ -12,11 +12,13 @@
 import { describe, it, expect } from "vitest";
 import { env } from "cloudflare:test";
 import {
+  decideConsumable,
   decideEntitlement,
   isPlusActive,
   type JwsVerifier,
   type VerifiedTransaction,
 } from "../src/lib/receipts";
+import { SHARD_PACKS } from "../src/lib/config";
 import { route, type Deps } from "../src/index";
 
 const PLUS = env.PLUS_PRODUCT_ID;
@@ -127,6 +129,63 @@ describe("isPlusActive — Plus tier detection", () => {
   });
 });
 
+// ── pure consumable decisions (server-authoritative Shard grant, §7) ──────────
+
+describe("decideConsumable — Shard grant + unknown-product rejection", () => {
+  const STARTER = "com.vyradata.keepfall.shards.starter";
+
+  function consumableTxn(productId: string): VerifiedTransaction {
+    return {
+      productId,
+      transactionId: "t-c",
+      originalTransactionId: "o-c",
+      type: "consumable",
+      bundleId: env.APP_BUNDLE_ID,
+      purchaseDateMs: NOW,
+    };
+  }
+
+  it("known Shard pack returns the catalog grant (100 for starter)", () => {
+    const out = decideConsumable(consumableTxn(STARTER), false);
+    expect(out.status).toBe("consumable");
+    if (out.status === "consumable") {
+      expect(out.shardsGranted).toBe(SHARD_PACKS[STARTER]);
+      expect(out.shardsGranted).toBe(100);
+      expect(out.alreadyProcessed).toBe(false);
+    }
+  });
+
+  it("every canonical pack maps to its catalog grant", () => {
+    for (const [productId, shards] of Object.entries(SHARD_PACKS)) {
+      const out = decideConsumable(consumableTxn(productId), false);
+      expect(out.status).toBe("consumable");
+      if (out.status === "consumable") {
+        expect(out.shardsGranted).toBe(shards);
+      }
+    }
+  });
+
+  it("a replay still reports the grant but flags alreadyProcessed=true", () => {
+    const out = decideConsumable(consumableTxn(STARTER), true);
+    expect(out.status).toBe("consumable");
+    if (out.status === "consumable") {
+      expect(out.shardsGranted).toBe(100);
+      expect(out.alreadyProcessed).toBe(true);
+    }
+  });
+
+  it("an unknown consumable productId is rejected('unknown_product')", () => {
+    const out = decideConsumable(
+      consumableTxn("com.vyradata.keepfall.shards.bogus"),
+      false,
+    );
+    expect(out.status).toBe("rejected");
+    if (out.status === "rejected") {
+      expect(out.reason).toBe("unknown_product");
+    }
+  });
+});
+
 // ── full-route idempotency + cancellation, against D1 ────────────────────────
 
 /** A verifier stub that returns whatever transaction the test hands it. */
@@ -160,11 +219,11 @@ function validateReq(token: string): Request {
   });
 }
 
-describe("POST /v1/receipts/validate — consumable idempotency", () => {
-  it("records a consumable once; a replay does not double-process", async () => {
+describe("POST /v1/receipts/validate — consumable Shard grant + idempotency", () => {
+  it("known Shard pack returns the catalog grant; a replay flags alreadyProcessed and does not double-record", async () => {
     const { token } = await makeAccountAndToken();
     const txn: VerifiedTransaction = {
-      productId: "com.vyradata.keepfall.retrytoken.x5",
+      productId: "com.vyradata.keepfall.shards.starter",
       transactionId: `txn-${crypto.randomUUID()}`,
       originalTransactionId: "o-consumable",
       type: "consumable",
@@ -174,15 +233,26 @@ describe("POST /v1/receipts/validate — consumable idempotency", () => {
     const deps = stubVerifier(txn);
 
     const first = await route(validateReq(token), env, deps);
-    const firstBody = (await first.json()) as { status: string; alreadyProcessed: boolean };
+    const firstBody = (await first.json()) as {
+      status: string;
+      shardsGranted: number;
+      alreadyProcessed: boolean;
+    };
     expect(first.status).toBe(200);
     expect(firstBody.status).toBe("consumable");
+    // Server-authoritative grant from the catalog (§7).
+    expect(firstBody.shardsGranted).toBe(100);
     expect(firstBody.alreadyProcessed).toBe(false);
 
     // Replay the exact same transaction id → idempotent, alreadyProcessed=true.
+    // The grant is still reported, but the client must not double-credit.
     const second = await route(validateReq(token), env, deps);
-    const secondBody = (await second.json()) as { alreadyProcessed: boolean };
+    const secondBody = (await second.json()) as {
+      shardsGranted: number;
+      alreadyProcessed: boolean;
+    };
     expect(secondBody.alreadyProcessed).toBe(true);
+    expect(secondBody.shardsGranted).toBe(100);
 
     // Exactly one receipt row exists for this transaction.
     const count = await env.DB.prepare(
@@ -191,6 +261,32 @@ describe("POST /v1/receipts/validate — consumable idempotency", () => {
       .bind(txn.transactionId)
       .first<{ n: number }>();
     expect(count?.n).toBe(1);
+  });
+
+  it("an unknown consumable productId is rejected and never recorded", async () => {
+    const { token } = await makeAccountAndToken();
+    const txnId = `txn-${crypto.randomUUID()}`;
+    const txn: VerifiedTransaction = {
+      productId: "com.vyradata.keepfall.shards.bogus",
+      transactionId: txnId,
+      originalTransactionId: "o-bogus",
+      type: "consumable",
+      bundleId: env.APP_BUNDLE_ID,
+      purchaseDateMs: NOW,
+    };
+
+    const res = await route(validateReq(token), env, stubVerifier(txn));
+    expect(res.status).toBe(422);
+    const body = (await res.json()) as { error: { code: string } };
+    expect(body.error.code).toBe("unknown_product");
+
+    // No receipt row was written for the rejected product.
+    const count = await env.DB.prepare(
+      `SELECT COUNT(*) AS n FROM receipts WHERE transaction_id = ?1`,
+    )
+      .bind(txnId)
+      .first<{ n: number }>();
+    expect(count?.n).toBe(0);
   });
 });
 

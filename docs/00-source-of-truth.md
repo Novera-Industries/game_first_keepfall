@@ -161,6 +161,11 @@ StoreKit 2 auto-renewable. **7-day free trial** (recommended; gated behind a rem
 - **Cosmetics earned during a subscription are kept on cancellation** — non-negotiable
   trust commitment. **Write tests for this.**
 
+**Monthly cosmetic drop schedule:** one cosmetic (skin or border) per active subscription
+month, kept forever. Canonical: [`config/plus-monthly-drops.json`](../config/plus-monthly-drops.json)
+(12 months defined, then repeats), mirrored in `PlusMonthlyDrops`. All ids namespaced
+`cosmetic.plus.*`; never a unit, currency, tile-as-power, or stat.
+
 ### Product 3 — PvE Retry Tokens (server-authoritative)
 After a PvE loss, a token restores **one attempt** with **identical AI, map seed, and
 starting hand**. The player still has to win.

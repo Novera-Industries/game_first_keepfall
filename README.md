@@ -83,6 +83,11 @@ track (30 tiers, 12 cosmetics = 5 free + 7 premium) and simulates free-track com
 unlock. Canonical content: [config/battlepass-season1.json](config/battlepass-season1.json);
 `BattlePassSeason1Tests` pins it.
 
+**Milestone 05 — Keepfall Plus:** **Keepfall ▸ Plus** logs the perks + monthly-drop schedule and
+simulates subscribe → 3 monthly drops → cancel (cosmetics kept). One tier, $5.99/mo, 7-day trial;
+12-month drop schedule in [config/plus-monthly-drops.json](config/plus-monthly-drops.json);
+`PlusMonthlyDropFlowTests` + `SubscriptionCosmeticPermanenceTests` pin the renewal/permanence flow.
+
 ## Continuous integration
 
 [`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs on push/PR:

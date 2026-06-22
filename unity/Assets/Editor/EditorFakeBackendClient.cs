@@ -33,6 +33,18 @@ namespace Keepfall.EditorTools
                 return Task.FromResult(new ValidateReceiptResponse { Valid = false });
             }
 
+            // Keepfall Plus subscription (§6 Product 2): approve and report a 30-day period so the
+            // Plus demo can activate perks. The real Worker derives this from the StoreKit 2 JWS.
+            if (request.ProductId == PlusSubscription.PlusProductId)
+            {
+                return Task.FromResult(new ValidateReceiptResponse
+                {
+                    Valid = true,
+                    ProductId = request.ProductId,
+                    CurrentPeriodEndUtc = DateTimeOffset.UtcNow.AddDays(30).ToString("o"),
+                });
+            }
+
             // Server-authoritative grant: look the product up in the canonical catalog (§7).
             int shards = ShardsForProduct(request.ProductId);
             if (shards <= 0)

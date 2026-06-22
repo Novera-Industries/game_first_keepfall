@@ -132,6 +132,12 @@
 - **Tests that must pass:** **cosmetic-permanence-on-cancellation** (non-negotiable),
   single-tier invariant, "no subscriber-only unit/tile" test, "Plus grants no combat
   advantage" test, sandbox-renewal → cosmetic-drop test.
+- **Now in this repo:** `PlusSubscription` already enforces the perks, hard exclusions, and
+  cosmetic permanence (`SubscriptionCosmeticPermanenceTests`, `PlusExclusionTests`). The
+  **monthly-drop content + renewal flow are ready** — 12-month schedule in
+  [`config/plus-monthly-drops.json`](../config/plus-monthly-drops.json), mirrored in
+  `PlusMonthlyDrops`, with `PlusMonthlyDropFlowTests` driving subscribe → 3 renewals →
+  per-month drop → cancel-keeps-all. Editor on-ramp: **Keepfall ▸ Plus**.
 
 ## Milestone 06 — Retry Tokens (overlaps 05)
 

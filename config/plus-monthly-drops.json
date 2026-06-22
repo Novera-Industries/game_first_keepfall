@@ -1,0 +1,24 @@
+{
+  "_meta": {
+    "schemaVersion": 1,
+    "source": "docs/00-source-of-truth.md §6 Product 2 (Keepfall Plus monthly cosmetic drop)",
+    "lastUpdated": "PLACEHOLDER - set on release",
+    "policy": "One drop per active subscription month. Cosmetic-only (skin or border). Kept forever on cancellation (§6). Never a unit, currency, tile-as-power, or stat. After month 12 the schedule repeats; an already-owned drop is not re-granted."
+  },
+  "productId": "com.vyradata.keepfall.plus.monthly",
+  "months": 12,
+  "drops": [
+    { "month": 1,  "cosmeticId": "cosmetic.plus.01.dawnward_vanguard",    "type": "skin",   "displayName": "Dawnward Vanguard" },
+    { "month": 2,  "cosmeticId": "cosmetic.plus.02.amber_watch",          "type": "border", "displayName": "Amber Watch" },
+    { "month": 3,  "cosmeticId": "cosmetic.plus.03.cinder_skirmisher",    "type": "skin",   "displayName": "Cinder Skirmisher" },
+    { "month": 4,  "cosmeticId": "cosmetic.plus.04.duskline",             "type": "border", "displayName": "Duskline" },
+    { "month": 5,  "cosmeticId": "cosmetic.plus.05.verdant_archer",       "type": "skin",   "displayName": "Verdant Archer" },
+    { "month": 6,  "cosmeticId": "cosmetic.plus.06.riverlight",           "type": "border", "displayName": "Riverlight" },
+    { "month": 7,  "cosmeticId": "cosmetic.plus.07.emberward_mage",       "type": "skin",   "displayName": "Emberward Mage" },
+    { "month": 8,  "cosmeticId": "cosmetic.plus.08.coppervein",           "type": "border", "displayName": "Coppervein" },
+    { "month": 9,  "cosmeticId": "cosmetic.plus.09.gilded_champion",      "type": "skin",   "displayName": "Gilded Champion" },
+    { "month": 10, "cosmeticId": "cosmetic.plus.10.nightfall",            "type": "border", "displayName": "Nightfall" },
+    { "month": 11, "cosmeticId": "cosmetic.plus.11.hearthlight_engineer", "type": "skin",   "displayName": "Hearthlight Engineer" },
+    { "month": 12, "cosmeticId": "cosmetic.plus.12.golden_hour",          "type": "border", "displayName": "Golden Hour" }
+  ]
+}

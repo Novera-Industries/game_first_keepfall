@@ -88,6 +88,11 @@ simulates subscribe → 3 monthly drops → cancel (cosmetics kept). One tier, $
 12-month drop schedule in [config/plus-monthly-drops.json](config/plus-monthly-drops.json);
 `PlusMonthlyDropFlowTests` + `SubscriptionCosmeticPermanenceTests` pin the renewal/permanence flow.
 
+**Milestone 06 — Retry Tokens + difficulty:** **Keepfall ▸ Combat** logs the AI difficulty curve
+(tier by roster size, not days) and simulates a server-authoritative retry after 3 losses. The
+curve is pinned by `DifficultyCurveTests`; retry authority lives in the Worker (`retry.test.ts`,
+`retry.routes.test.ts`) with `RetryTokenClient` deferring to it (`RetryTokenClientTests`).
+
 ## Continuous integration
 
 [`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs on push/PR:

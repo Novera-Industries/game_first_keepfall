@@ -156,6 +156,13 @@
 - **Tests that must pass (server-side):** **cannot-retry-a-win**, **cannot-retry-a-retry**,
   **rewards-capped-at-first-attempt**; client-side: identical-seed/hand/AI replay,
   difficulty-advances-on-roster (not days), token-source caps.
+- **Now in this repo:** retry plumbing is wired and authoritative — `retry.test.ts` (22) +
+  `retry.routes.test.ts` (14) on the Worker, `RetryTokenClient` (daily grant, buy 20/90,
+  eligibility, redeem) with `RetryTokenClientTests`. The **difficulty curve is locked** —
+  `AiController.SelectTier` maps roster size → tier via `ai.threshold.*` (0/8/12/18/22), pinned by
+  `DifficultyCurveTests` (boundaries, monotonic non-decreasing, all five tiers reachable).
+  Thresholds documented in source-of-truth §4. Editor on-ramp: **Keepfall ▸ Combat** (log curve;
+  simulate retry after 3 losses).
 
 ## Milestone 07 — Funnel + Analytics
 

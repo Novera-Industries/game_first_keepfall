@@ -116,6 +116,23 @@ money.
   the *expected* correlation, not the trigger.)
 - **Loss-rate targets (unassisted F2P):** ≤ 25% Apprentice · ~40% Tactician · ~55% Marshal.
 
+### Difficulty curve — roster-size thresholds (locked)
+
+The tier is chosen by **unlocked-unit count** (not days), via remote-config `ai.threshold.*`
+so it tunes without a rebuild. `AiController.SelectTier` picks the highest tier whose threshold
+the count meets. Defaults (pinned by `DifficultyCurveTests`):
+
+| Unlocked units | Tier | Config key |
+| --- | --- | --- |
+| 0–7 | Apprentice | `ai.threshold.apprentice` = 0 |
+| 8–11 | Adept | `ai.threshold.adept` = 8 |
+| 12–17 | Tactician | `ai.threshold.tactician` = 12 |
+| 18–21 | Commander | `ai.threshold.commander` = 18 |
+| 22–24 | Marshal | `ai.threshold.marshal` = 22 |
+
+The curve is **monotonic non-decreasing** in roster size. A retry replays at the **identical**
+tier/seed/hand (§6 Product 3), so difficulty never silently shifts under a retry.
+
 ---
 
 ## 5. Deck-building rules (enforced in UI + validator)

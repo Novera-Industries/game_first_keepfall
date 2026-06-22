@@ -88,16 +88,24 @@ namespace Keepfall.EditorTools
             CancellationToken cancellationToken = default) =>
             throw new NotSupportedException("EditorFakeBackendClient only supports ValidateReceiptAsync.");
 
+        // Retry-token methods — canned positive verdicts so the difficulty/retry demo can show the
+        // SERVER-AUTHORITATIVE redeem path (the real Worker enforces cannot-retry-a-win etc.).
         public Task<RequestRetryTokenResponse> RequestRetryTokenAsync(
             RequestRetryTokenRequest request, CancellationToken cancellationToken = default) =>
-            throw new NotSupportedException("EditorFakeBackendClient only supports ValidateReceiptAsync.");
+            Task.FromResult(new RequestRetryTokenResponse { Eligible = true, Reason = null, TokenBalance = 1 });
 
         public Task<RedeemRetryTokenResponse> RedeemRetryTokenAsync(
             RedeemRetryTokenRequest request, CancellationToken cancellationToken = default) =>
-            throw new NotSupportedException("EditorFakeBackendClient only supports ValidateReceiptAsync.");
+            Task.FromResult(new RedeemRetryTokenResponse
+            {
+                Redeemed = true,
+                ReplaySeed = "sandbox-replay-seed",
+                RewardsCappedToFirstAttempt = true,
+                TokenBalance = 0,
+            });
 
         public Task<GrantDailyRetryTokenResponse> GrantDailyRetryTokenAsync(
             CancellationToken cancellationToken = default) =>
-            throw new NotSupportedException("EditorFakeBackendClient only supports ValidateReceiptAsync.");
+            Task.FromResult(new GrantDailyRetryTokenResponse { Granted = true, TokenBalance = 1 });
     }
 }

@@ -215,7 +215,9 @@ namespace Keepfall.Monetization
         /// client does NOT pre-authorize: it does not check win/retry rules, does not require a
         /// positive local balance, and does not debit locally. It submits the request and
         /// returns the SERVER'S verdict. On a redeemed verdict it caches the server balance and
-        /// resets the match's loss streak; on a refusal it surfaces a calm mapped message.
+        /// returns the replay seed; the caller clears the match's loss streak via
+        /// <see cref="ResetLossStreak"/> once it links the attempt to its match. On a refusal it
+        /// surfaces a calm mapped message.
         /// </summary>
         public async Task<RetryRedeemOutcome> RedeemAsync(
             string attemptId, CancellationToken cancellationToken = default)
@@ -244,13 +246,14 @@ namespace Keepfall.Monetization
                     resp.TokenBalance, MapRefusal(resp.Reason));
             }
 
-            // Server authorized the retry: clear this match's loss streak so the offer does not
-            // immediately re-fire, and log the server-authoritative redeem.
-            _state.PerMatchLossStreak.Remove(matchId);
-
+            // Server authorized the retry. Log the server-authoritative redeem with the replay
+            // seed (the match seed, per the analytics taxonomy). The caller clears the match's
+            // loss streak via ResetLossStreak once it links this attempt back to its match (§8),
+            // so the offer does not immediately re-fire.
             _analytics?.Track(Events.RetryTokenRedeemed, new Dictionary<string, object>
             {
-                ["match_id"] = matchId,
+                ["attempt_id"] = attemptId,
+                ["match_seed"] = resp.ReplaySeed ?? string.Empty,
                 ["rewards_capped"] = resp.RewardsCappedToFirstAttempt,
                 ["token_balance"] = resp.TokenBalance,
             });

@@ -69,6 +69,15 @@ accrues Stone against the wall clock, and exposes silent-claim / unit-unlock act
 `EconomyLoopDriver` component's right-click context menu. (Editor on-ramp lives in
 `unity/Assets/Editor/EconomyDemoMenu.cs`; the loop itself is `Assets/Scripts/Economy/`.)
 
+**Milestone 02 — Shop + IAP:** **Keepfall ▸ Shop ▸ Log Current Rotation** / **Simulate Starter
+Pack Purchase** exercise the cosmetic rotation and the Shard-pack purchase→validate→credit flow in
+editor. StoreKit 2 sandbox testing uses `unity/StoreKitConfig/Keepfall.storekit` — see
+[docs/storekit-sandbox.md](docs/storekit-sandbox.md).
+
+**Milestone 03 — tile interaction loop:** **Keepfall ▸ Tile ▸ Run Tile Interaction Loop**
+(`unity/Assets/Editor/TileInteractionDemo.cs`) prints the complete accrue → accelerate → claim
+loop to the Console (no Play mode needed); `TileInteractionLoopTests` verifies it in CI.
+
 ## Continuous integration
 
 [`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs on push/PR:

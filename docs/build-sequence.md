@@ -89,6 +89,12 @@
   locked in the first 15 minutes of D1, and cannot stack past 3 days queued.
 - **Tests that must pass:** "≤ 1 day of yield per purchase" cap, "no stacking past 3 days"
   cap, D1 first-15-min lock, ≥30%-fill gate, price-by-tier (15/30/60).
+- **Now in this repo:** `YieldAccelerator` enforces every hard cap (covered by
+  `AcceleratorCapTests`, 14 tests). The **tile interaction loop is complete** end to end —
+  `TileInteractionLoopTests` drives win → accrue → accelerate (charges the rank price, fills to
+  cap) → silent claim through the real services, and the editor on-ramp **Keepfall ▸ Tile ▸ Run
+  Tile Interaction Loop** (`unity/Assets/Editor/TileInteractionDemo.cs`) prints the loop step by
+  step with no Play mode needed.
 
 ## Milestone 04 — Battle Pass (overlaps 03)
 

@@ -34,3 +34,8 @@ firebase-adminsdk*.json
 .idea/
 .vscode/*
 !.vscode/extensions.json
+
+# ── Accidental nested clone of this repo ────────────────
+# A second clone of this repository was created inside the working tree
+# (game_first_keepfall/). It must never be tracked by the outer repo.
+/game_first_keepfall/

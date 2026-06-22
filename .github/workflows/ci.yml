@@ -4,9 +4,12 @@ name: CI
 #  • backend — Cloudflare Workers TypeScript: typecheck + the full Vitest suite. Runs on a clean
 #    GitHub checkout, so the local "spaces in the iCloud path break vitest-pool-workers" caveat
 #    does NOT apply here.
-#  • unity-tests — the EditMode test suite via game-ci. Requires a Unity license in repo secrets
-#    (UNITY_LICENSE or UNITY_SERIAL + UNITY_EMAIL/UNITY_PASSWORD). Without those secrets this job
-#    is skipped, not failed.
+#  • unity-tests — the EditMode test suite via game-ci. Opt-in: it runs only when the repo
+#    variable UNITY_TESTS_ENABLED == 'true' AND a Unity license is configured in secrets
+#    (UNITY_LICENSE or UNITY_SERIAL, plus UNITY_EMAIL/UNITY_PASSWORD). Until you set that
+#    variable the job is SKIPPED (neutral), not failed — so CI stays green on the backend alone.
+#    Enable: Settings ▸ Secrets and variables ▸ Actions ▸ Variables → UNITY_TESTS_ENABLED=true,
+#    then add the license secrets.
 
 on:
   push:
@@ -43,8 +46,9 @@ jobs:
   unity-tests:
     name: Unity EditMode tests
     runs-on: ubuntu-latest
-    # Only run when a Unity license is configured (forks/PRs without secrets are skipped cleanly).
-    if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository }}
+    # Opt-in. Skipped (neutral, not failed) until you set repo variable UNITY_TESTS_ENABLED=true
+    # and add the Unity license secrets — game-ci cannot run without a license.
+    if: ${{ vars.UNITY_TESTS_ENABLED == 'true' }}
     steps:
       - uses: actions/checkout@v4
         with:

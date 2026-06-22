@@ -1,0 +1,74 @@
+name: CI
+
+# Runs the parts of Keepfall that can be validated automatically:
+#  • backend — Cloudflare Workers TypeScript: typecheck + the full Vitest suite. Runs on a clean
+#    GitHub checkout, so the local "spaces in the iCloud path break vitest-pool-workers" caveat
+#    does NOT apply here.
+#  • unity-tests — the EditMode test suite via game-ci. Requires a Unity license in repo secrets
+#    (UNITY_LICENSE or UNITY_SERIAL + UNITY_EMAIL/UNITY_PASSWORD). Without those secrets this job
+#    is skipped, not failed.
+
+on:
+  push:
+    branches: [main, "milestone/**"]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  checks: write
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: Backend (typecheck + Vitest)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+
+  unity-tests:
+    name: Unity EditMode tests
+    runs-on: ubuntu-latest
+    # Only run when a Unity license is configured (forks/PRs without secrets are skipped cleanly).
+    if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+      - uses: actions/cache@v4
+        with:
+          path: unity/Library
+          key: Library-${{ hashFiles('unity/Assets/**', 'unity/Packages/**', 'unity/ProjectSettings/**') }}
+          restore-keys: |
+            Library-
+      - uses: game-ci/unity-test-runner@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+        with:
+          projectPath: unity
+          unityVersion: 2023.2.20f1
+          testMode: editmode
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          artifactsPath: unity-test-results
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: unity-editmode-results
+          path: unity-test-results

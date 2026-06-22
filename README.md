@@ -61,6 +61,22 @@ Open `unity/` in Unity 2023 LTS (2023.2.x). All runtime gameplay code is in the 
 `Keepfall.Game` assembly; run EditMode tests via the Test Runner. Pure logic (tile accrual,
 wallet, deck/accelerator validators, funnel engine) is free of `UnityEngine` so it is unit-testable.
 
+**Milestone 01 — editor-playable economy loop:** in the editor menu choose **Keepfall ▸ Economy
+▸ Create Economy Loop Scene** (generates `Assets/Scenes/EconomyLoop.unity` via Unity's own
+serializer), or **Spawn Economy Loop Demo** (`Ctrl/Cmd+Shift+E`) to drop the bootstrap into the
+open scene. Press Play and watch the Console: the loop seeds a save, grants a tile from a "win",
+accrues Stone against the wall clock, and exposes silent-claim / unit-unlock actions on the
+`EconomyLoopDriver` component's right-click context menu. (Editor on-ramp lives in
+`unity/Assets/Editor/EconomyDemoMenu.cs`; the loop itself is `Assets/Scripts/Economy/`.)
+
+## Continuous integration
+
+[`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs on push/PR:
+- **backend** — `npm ci` + `tsc --noEmit` + the full Vitest suite on a clean checkout (no spaces → the path caveat above does not bite in CI).
+- **unity-tests** — the EditMode suite via [game-ci](https://game.ci). Add repo secrets `UNITY_LICENSE` (or `UNITY_SERIAL`) + `UNITY_EMAIL` + `UNITY_PASSWORD` to enable it; without them the job skips cleanly. This is how the 22 EditMode tests + the editor scripts get compiled and run, since no Unity runner exists locally.
+
+Requires pushing to a GitHub remote (none configured yet: `git remote add origin …`).
+
 ## Non-negotiables (enforced + audited)
 
 Sell time, never outcomes · exactly two currencies (Stone + Shards) · tiles only from combat ·
